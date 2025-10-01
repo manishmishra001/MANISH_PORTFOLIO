@@ -1,0 +1,454 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANISHMISHRA/PORTFOLIO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /*
+        style.css - Custom styles for scrollbar, tab indicator, and static Skill Cards.
+        */
+
+        /* --- SCROLLBAR STYLES (Retained) --- */
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #000; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #333; }
+        * { scrollbar-width: thin; scrollbar-color: #000000bd #1e1d1d; }
+
+        /* --- TAB INDICATOR LOGIC (Retained) --- */
+
+        .tab-links::after {
+            content: '';
+            display: block;
+            height: 2px;
+            width: 0; 
+            background: #ca2222;
+            transition: width 0.3s ease;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+        .tab-links.active-link::after { width: 100%; }
+
+        /* --- STATIC SKILL CARD STYLES --- */
+
+        /* Base style for all skill cards */
+        .skill-card-base {
+            position: relative;
+            height: 450px;
+            border-radius: 1rem;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+            margin-bottom: 2rem; /* Add separation on mobile */
+        }
+
+        /* --- Image Filter Overlays --- */
+        /* Mobile: Image is always blurred and darkened, text is visible */
+        .skill-image-filter-mobile {
+            filter: brightness(0.5) blur(3px); 
+        }
+
+        /* Desktop Default: Image is clear by default */
+        .skill-image-filter-desktop {
+            filter: brightness(1) blur(0px); /* CLEAR IMAGE */
+        }
+
+        /* Desktop Hover: Image blurs and darkens */
+        .skill-image-filter-hover {
+            filter: brightness(0.5) blur(3px); /* BLUR IMAGE ON HOVER */
+        }
+
+
+        /* Desktop Styles (min-width: 768px) */
+        @media (min-width: 768px) {
+            .skill-card-base {
+                margin-bottom: 0; 
+                transform: perspective(1000px) rotateY(0deg) scale(0.95);
+                opacity: 0.9; /* Slight opacity for initial state */
+            }
+            
+            .skill-card-base:hover {
+                transform: perspective(1000px) rotateY(0deg) scale(1.05);
+                opacity: 1;
+                box-shadow: 0 20px 50px rgba(250, 34, 34, 0.4), 0 0 0 1px #ca2222;
+                z-index: 10;
+            }
+        }
+
+        /* The dark/blur overlay container */
+        .skill-card-overlay {
+            position: absolute;
+            inset: 0;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            
+            /* Crucial Change: Default transparent for desktop/clear image */
+            background-color: transparent;
+            transition: background-color 0.5s ease;
+            z-index: 10;
+        }
+
+        /* Mobile specific overlay (always dark for text readability) */
+        @media (max-width: 767px) {
+            .skill-card-overlay {
+                background-color: rgba(0, 0, 0, 0.7); 
+            }
+        }
+
+
+        /* Desktop Hover: Overlay becomes opaque, ensuring text contrast */
+        @media (min-width: 768px) {
+            .skill-card-base:hover .skill-card-overlay {
+                /* This makes the background darker on hover, contrasting the text */
+                background-color: rgba(0, 0, 0, 0.9); 
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-dark': '#000000',
+                        'secondary-dark': '#3b3a3a', /* For inputs/backgrounds */
+                        'accent-red': '#ca2222',
+                        'text-light': '#dedada',
+                    },
+                    fontFamily: {
+                        'sans': ['"Gill Sans"', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-primary-dark text-text-light font-sans">
+    <div class="container min-h-screen">
+        <header class="flex justify-between items-center h-16 md:h-20 lg:h-24 px-4 sm:px-8 lg:px-16 text-xl">
+            <div class="flex text-4xl lg:text-5xl font-bold tracking-tight">
+                <div class="text-accent-red">M</div>
+                <div class="ml-0.5">ANISH.</div>
+            </div>
+            
+            <div class="hamburger md:hidden text-3xl cursor-pointer z-20">
+                <i class="fa-solid fa-bars text-white"></i>
+            </div>
+
+            <nav class="hidden md:block">
+                <ul id="ul1" class="flex gap-8 lg:gap-14 font-semibold">
+                    <li><a href="#home" class="hover:text-accent-red transition duration-300">HOME</a></li>
+                    <li><a href="#about" class="hover:text-accent-red transition duration-300">ABOUT</a></li>
+                    <li><a href="#SKILL" class="hover:text-accent-red transition duration-300">SKILL</a></li>
+                    <li><a href="#CONTACT" class="hover:text-accent-red transition duration-300">CONTACT</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main class="flex flex-col md:flex-row items-center pt-10 md:pt-0 min-h-[85vh]" id="home">
+            <div class="w-full md:w-1/2 flex justify-center items-center p-4 md:p-10 text-center md:text-left">
+                <div class="max-w-xl">
+                    <h1 class="text-3xl sm:text-4xl md:text-3xl lg:text-6xl font-normal leading-tight">
+                        Hi, I'm <span class="text-accent-red font-bold text-5xl sm:text-6xl lg:text-5xl">Manish Mishra</span> 
+                        <div id="im" class="mt-2 text-2xl sm:text-3xl md:text-4xl">and I'm an Aspiring </div>
+                        <span id="webdevelper" class="text-accent-red font-semibold text-3xl sm:text-4xl md:text-5xl"></span>
+                    </h1>
+                </div>
+            </div>
+            <div class="w-full md:w-1/2 flex justify-center items-center p-4">
+                <div class="w-72 h-72 md:w-96 md:h-96 lg:w-[40rem] lg:h-[40rem] bg-[url('home.jpg')] bg-cover bg-center"></div>
+            </div>
+        </main>
+    </div>
+
+    <hr class="border-t border-gray-700 mx-auto w-[90%]" id="line">
+
+    <section id="about" class="flex flex-col lg:flex-row justify-center items-center py-16 lg:py-24 px-4 sm:px-8 lg:px-16">
+    <div class="w-full lg:w-2/5 flex justify-center mb-8 lg:mb-0">
+        <div id="photo" class="w-64 h-80 md:w-96 md:h-[30rem] bg-[url('about.jpg')] bg-cover bg-center rounded-lg shadow-xl"></div>
+    </div>
+    <div class="w-full lg:w-3/5 text-center lg:text-left">
+        <h2 id="sub-title" class="text-4xl sm:text-5xl lg:text-6xl font-medium mb-6 text-text-light"><b>About me</b></h2>
+        <div class="myself max-w-2xl lg:max-w-none lg:pr-12 mx-auto lg:mx-0 text-text-light">
+            <p class="text-base sm:text-lg leading-relaxed">
+                Hi, I'm Manish — a motivated and curious learner currently working hard to become a frontend web developer. I've just started my college journey and have been diving deep into 
+                <span class="text-xl font-bold text-accent-red">HTML, CSS, JavaScript, NODE JS, Mongoose, DATABASE</span> through hands-on practice and personal projects. Even though I’m not an expert yet, I’m passionate about building clean, user-friendly websites and constantly improving my skills every day. I enjoy experimenting with animations, learning how real websites work, and turning simple code into something visually exciting. This is just the beginning of my journey, and I’m excited to grow step by step into a skilled frontend developer
+            </p>
+        </div>
+        
+        <div class="tab-titles flex justify-center lg:justify-start mt-8 gap-6 md:gap-10 border-b border-gray-700">
+            <p class="tab-links text-xl md:text-2xl cursor-pointer pb-2 relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:bg-accent-red after:transition-all hover:text-accent-red text-text-light" onclick="opentab(event)">Skill</p>
+            <p class="tab-links text-xl md:text-2xl cursor-pointer pb-2 relative hover:text-accent-red text-text-light" onclick="opentab(event)">Experience</p>
+            <p class="tab-links text-xl md:text-2xl cursor-pointer pb-2 relative hover:text-accent-red text-text-light" onclick="opentab(event)">Education</p>
+        </div>
+        <div class="tab-content pt-6 pl-2 text-text-light">
+            <ul class="space-y-3 list-none p-0 text-left">
+                <li class="text-lg md:text-xl">🌐 HTML</li>
+                <li class="text-lg md:text-xl">🎨 CSS</li>
+                <li class="text-lg md:text-xl">🧠 JavaScript </li>
+                <li class="text-lg md:text-xl">🧰 Git & GitHub</li>
+                <li class="text-lg md:text-xl">🧑‍💻 Currently learning: <span class="text-accent-red font-bold">TAILWINDCSS, BACKEND</span> 👀</li>
+            </ul>
+        </div>
+
+        <div class="tab-content pt-6 pl-2 hidden text-text-light">
+            <h3 class="text-2xl md:text-3xl font-bold text-accent-red mb-3">Frontend Development (2025 - Present)</h3>
+            <p class="text-lg md:text-xl ml-3">Learning <span class="font-bold">HTML, CSS, and JavaScript</span> through online tutorials and practice projects.</p>
+            <p class="text-lg md:text-xl ml-3">Focused on creating responsive layouts and interactive pages.</p>
+        </div>
+
+        <div class="tab-content pt-6 pl-2 hidden text-text-light">
+            <ul class="space-y-4 text-left">
+                <li>
+                    <h3 class="text-xl md:text-2xl font-semibold">2023 :</h3> 
+                    <p class="text-lg md:text-xl ml-6">10th - 86.1%</p>
+                </li>
+                <li>
+                    <h3 class="text-xl md:text-2xl font-semibold">2025 :</h3>
+                    <p class="text-lg md:text-xl ml-6">12th - 75.9%</p>
+                </li>
+                <li><h3 class="text-xl md:text-2xl font-semibold">More soon.....</h3></li>
+            </ul>
+        </div>
+    </div>
+</section>
+    
+    <hr class="border-t border-gray-700 mx-auto w-[90%]">
+    
+
+<section id="SKILL" class="py-16 px-4 sm:px-8 lg:px-16 min-h-[70vh]">
+        <h2 class="text-4xl sm:text-5xl font-medium mb-12 lg:mb-20 text-center text-white">MY STACK.</h2>
+        
+        <div class="flex flex-col md:flex-row justify-center items-center gap-8 max-w-6xl mx-auto">
+            
+            <div class="group skill-card-base w-full md:w-[30%] lg:w-96 bg-[url('frontend.png')]">
+                <div class="absolute inset-0 skill-image-filter-mobile md:skill-image-filter-desktop md:group-hover:skill-image-filter-hover transition duration-500"></div>
+                <div class="skill-card-overlay">
+                    <div class="skill-card-content relative z-20 md:opacity-0 md:group-hover:opacity-100 transition duration-500">
+                        <h3 class="text-3xl font-extrabold mb-4 text-accent-red">01. FRONTEND <i class="fa-solid fa-code text-white"></i></h3>
+                        <p class="text-lg text-gray-200 mb-3 font-semibold">Building beautiful, interactive user interfaces.</p>
+                        <ul class="list-disc list-inside space-y-2 text-left ml-4 text-xl">
+                            <li><span class="font-bold text-sky-400">HTML5</span>: Semantic Structure</li>
+                            <li><span class="font-bold text-sky-400">CSS3</span>: Flexbox & Grid</li>
+                            <li><span class="font-bold text-sky-400">JavaScript</span>: Modern APIs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group skill-card-base w-full md:w-[30%] lg:w-96 bg-[url('work.png')]">
+                <div class="absolute inset-0 skill-image-filter-mobile md:skill-image-filter-desktop md:group-hover:skill-image-filter-hover transition duration-500"></div>
+                <div class="skill-card-overlay">
+                    <div class="skill-card-content relative z-20 md:opacity-0 md:group-hover:opacity-100 transition duration-500">
+                        <h3 class="text-3xl font-extrabold mb-4 text-accent-red">02. WORKFLOW <i class="fa-solid fa-toolbox text-white"></i></h3>
+                        <p class="text-lg text-gray-200 mb-3 font-semibold">Using efficient tools for development and deployment.</p>
+                        <ul class="list-disc list-inside space-y-2 text-left ml-4 text-[1rem]">
+                            <li><span class="font-bold text-emerald-400">Tailwind CSS</span>: Rapid Styling</li>
+                            <li><span class="font-bold text-emerald-400">Git/GitHub</span>: Version Control Master</li>
+                            <li><span class="font-bold text-emerald-400">DevTools</span>: Debugging & Profiling</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group skill-card-base w-full md:w-[30%] lg:w-96 bg-[url('backend.png')]">
+                <div class="absolute inset-0 skill-image-filter-mobile md:skill-image-filter-desktop md:group-hover:skill-image-filter-hover transition duration-500"></div>
+                <div class="skill-card-overlay">
+                    <div class="skill-card-content relative z-20 md:opacity-0 md:group-hover:opacity-100 transition duration-500">
+                        <h3 class="text-3xl font-extrabold mb-4 text-accent-red">03. BACKEND <i class="fa-solid fa-server text-white"></i></h3>
+                        <p class="text-lg text-gray-200 mb-3 font-semibold">Currently learning the server side and database management.</p>
+                        <ul class="list-disc list-inside space-y-2 text-left ml-4 text-xl">
+                            <li class="font-bold text-yellow-400">Node.js / Express 💡</li>
+                            <li class="font-bold text-yellow-400">Database (SQL/NoSQL) 💾</li>
+                            <li class="font-bold text-yellow-400">RESTful APIs</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        
+        <p class="mt-12 text-center text-2xl italic font-bold text-gray-300">
+            "Bridging the gap to deliver high-quality <span class="text-accent-red font-extrabold">Full-Stack Solutions</span>."
+        </p>
+    </section> 	
+
+
+    <hr class="border-t border-gray-700 mx-auto w-[90%]">
+
+    <section id="CONTACT" class="py-16 px-4 sm:px-8 lg:px-16">
+        <h2 class="text-4xl sm:text-5xl font-medium mb-12 lg:mb-16 text-center">CONTACT</h2>
+        <div class="flex flex-col lg:flex-row justify-center items-start space-y-12 lg:space-y-0">
+            
+            <div class="w-full lg:w-2/5 flex justify-center lg:justify-start ">
+                <div class="lg:ml-10 text-center lg:text-left">
+                    <h3 class="text-3xl font-bold text-text-light mb-6">CONTACT ME</h3>
+                    
+                    <div class="flex justify-center lg:justify-start space-x-6 text-3xl mb-8 pl-3">
+                        <a href="https://www.instagram.com/rudra_mishra_666/" aria-label="Instagram" class="hover:text-accent-red transition duration-300">
+                            <i class="fa-brands fa-instagram" style="color: #ffffff;"></i>
+                        </a>
+                        
+                        <a href="https://github.com/manishmishra001" aria-label="GitHub" class="hover:text-accent-red transition duration-300">
+                            <i class="fa-brands fa-github text-white"></i>
+                        </a>
+                        <a href="#" aria-label="LinkedIn" class="hover:text-accent-red transition duration-300">
+                            <i class="fa-brands fa-linkedin-in text-white"></i>
+                        </a>
+                    </div>
+                    <div class="flex justify-center lg:justify-start">
+                        <a href="cv.html" class="bg-accent-red text-white text-xl font-semibold w-56 h-12 flex justify-center items-center rounded-md cursor-pointer hover:bg-red-700 transition duration-300">
+                            Download CV
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-full lg:w-3/5 flex justify-center">
+                <form class="w-full max-w-lg space-y-4" name="CONTACT" method="post">
+                    <input type="text" placeholder="Your Name" id="yname" name="NAME" required
+                        class="w-full p-3 rounded-lg bg-secondary-dark text-white border border-secondary-dark focus:border-accent-red focus:ring-1 focus:ring-accent-red transition">
+                    <input type="email" placeholder="Your Email" id="ymail" name="Email" required
+                        class="w-full p-3 rounded-lg bg-secondary-dark text-white border border-secondary-dark focus:border-accent-red focus:ring-1 focus:ring-accent-red transition">
+                    <textarea placeholder="Your Message" id="ym" name="MESSAGE" required rows="6"
+                        class="w-full p-3 rounded-lg bg-secondary-dark text-white border border-secondary-dark focus:border-accent-red focus:ring-1 focus:ring-accent-red transition resize-none"></textarea>
+                    <button type="submit"
+                        class="w-full sm:w-40 ml-auto block bg-accent-red text-white text-xl font-semibold py-3 rounded-md hover:bg-red-700 transition duration-300">
+                        SUBMIT
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+<script>
+    const form = document.forms['CONTACT'];
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzbsP4zp8r6DvM3D5F4Btzcc5FcHJnX_ldqJOEbMzEg-hR8sNs0U_PnmUrfz4ZgP5m0/exec'; // <--- PASTE YOUR GOOGLE SCRIPT URL HERE
+
+    form.addEventListener('submit', e => {
+        e.preventDefault(); // Stop the default form submission
+        
+        // Show a loading/submission message (optional)
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.textContent = 'SENDING...';
+        submitButton.disabled = true;
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                submitButton.textContent = 'SUBMITTED! 🎉';
+                
+                // Clear the form fields on successful submission
+                form.reset(); 
+                
+                // Re-enable the button after a delay
+                setTimeout(() => {
+                    submitButton.textContent = 'SUBMIT';
+                    submitButton.disabled = false;
+                }, 3000); // 3 seconds delay
+
+                console.log('Success!', response);
+            })
+            .catch(error => {
+                submitButton.textContent = 'ERROR! 😥';
+                console.error('Error!', error.message);
+                
+                // Re-enable the button after a delay
+                setTimeout(() => {
+                    submitButton.textContent = 'SUBMIT';
+                    submitButton.disabled = false;
+                }, 3000);
+            });
+    });
+</script>
+<script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+<script>
+    // Typed.js initialization
+    var typed = new Typed('#webdevelper', {
+        strings: ['HTML','CSS','JS','NODE JS','DATABASE','Web developer'],
+        typeSpeed: 20,
+        loop: true
+    });
+</script>
+
+
+<script>
+    // Hamburger Menu Script 
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('#ul1');
+
+    // Create the mobile menu structure inside the nav container dynamically
+    const mobileNav = document.createElement('ul');
+    mobileNav.id = 'mobile-ul1';
+    mobileNav.className = 'md:hidden fixed top-0 left-0 w-full h-full bg-primary-dark p-8 z-10 flex flex-col items-center justify-center space-y-8 transform -translate-x-full transition-transform duration-300';
+    mobileNav.innerHTML = `
+        <li><a href="#home" class="text-3xl hover:text-accent-red transition" onclick="toggleMenu()">HOME</a></li>
+        <li><a href="#about" class="text-3xl hover:text-accent-red transition" onclick="toggleMenu()">ABOUT</a></li>
+        <li><a href="#SKILL" class="text-3xl hover:text-accent-red transition" onclick="toggleMenu()">SKILL</a></li>
+        <li><a href="#CONTACT" class="text-3xl hover:text-accent-red transition" onclick="toggleMenu()">CONTACT</a></li>
+    `;
+    document.body.appendChild(mobileNav);
+
+    // Toggle function for hamburger menu
+    window.toggleMenu = () => {
+        mobileNav.classList.toggle('-translate-x-full');
+    };
+
+    hamburger.addEventListener('click', toggleMenu);
+</script>
+
+<script>
+    // --- CORRECTED & Consolidated Tab Switching Logic ---
+    var tablinks = document.getElementsByClassName("tab-links");
+    var tabcontents = document.getElementsByClassName("tab-content");
+
+    function opentab(evt) {
+        // Find the index of the clicked tab link
+        const clickedIndex = Array.from(tablinks).indexOf(evt.currentTarget);
+
+        // Remove 'active-link' and 'hidden' classes from all tabs/contents
+        for (let i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active-link");
+        }
+        for (let i = 0; i < tabcontents.length; i++) {
+            tabcontents[i].classList.add("hidden"); // Hide all content
+        }
+
+        // Add 'active-link' to the clicked tab link
+        evt.currentTarget.classList.add("active-link");
+
+        // Show the corresponding tab content based on the index
+        if (tabcontents[clickedIndex]) {
+            tabcontents[clickedIndex].classList.remove("hidden"); // Show content
+        }
+    }
+
+    // Initialize the active tab on load
+    document.addEventListener('DOMContentLoaded', () => {
+        // Ensure the first tab (Skill) is active and visible when the page loads
+        const initialLink = document.querySelector('.tab-links');
+        const initialContent = document.querySelector('.tab-content');
+
+        if (initialLink) {
+            initialLink.classList.add('active-link');
+        }
+        if (initialContent) {
+            initialContent.classList.remove('hidden');
+        }
+    });
+
+</script>
+
+</body>
+</html>
